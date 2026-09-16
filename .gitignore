@@ -1,0 +1,6 @@
+# 不入库：参考图（版权/隐私）、缓存、本地校验基准
+uploads/
+__pycache__/
+*.pyc
+.ref_hash.txt
+.DS_Store

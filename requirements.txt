@@ -1,0 +1,9 @@
+# Codex Pet 像素雪碧图生成框架 — pip 依赖清单
+# 用法: pip install -r requirements.txt
+#
+# 说明:
+#   - 唯一第三方依赖为 Pillow (PIL)，用于像素画布、NEAREST 整数放大与无损 WebP 导出;
+#     其余 import (math/json/argparse/importlib/sys) 均为 Python 标准库，无需安装。
+#   - 精确固定版本以保证产物字节级可复现 (WebP lossless 编码随 libwebp/Pillow 版本变化)。
+#   - Python 版本要求: >= 3.9 (仅用 f-string / 字典序等基础特性)。
+Pillow==12.3.0

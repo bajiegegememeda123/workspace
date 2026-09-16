@@ -1,0 +1,21 @@
+{
+  "name": "codex_pet",
+  "pet": "cat_v1",
+  "canvas": { "width": 1536, "height": 1872 },
+  "cell":   { "width": 192,  "height": 208 },
+  "grid":   { "cols": 8, "rows": 9 },
+  "scale": 4,
+  "rows": [
+    "idle",
+    "running-right",
+    "running-left",
+    "waving",
+    "jumping",
+    "failed",
+    "waiting",
+    "working",
+    "review"
+  ],
+  "out": "codex_pet_spritesheet.webp",
+  "preview": "preview_checker.png"
+}
