@@ -2,7 +2,8 @@
 
 > **新会话入口：先读 `BOOTSTRAP.md`**（完整性自检 → 最小读取 → 生产流程 → 提示词模板）。
 > 框架完整性校验：`sha256sum -c MANIFEST.sha256 --quiet && echo FRAMEWORK_OK`；
-> 工作区内备份：`codex_pet_framework.zip`（空白环境恢复用）。
+> 工作区内备份：`codex_pet_framework.zip`（空白环境恢复用）；
+> 跨平台持久化：`init_workspace.sh` + `docs/GIT_PERSISTENCE.md`（私有 git 正本，一键初始化任意环境）。
 
 程序化生成透明背景像素雪碧图（Sprite Sheet）的三层框架：**工艺层通用、角色层插件化、规格层配置化**。
 v1 交付物：`codex_pet_spritesheet.webp`（1536×1872，192×208 单元格，8 列 × 9 行，无损 WebP，全透明背景，无抗锯齿）。
