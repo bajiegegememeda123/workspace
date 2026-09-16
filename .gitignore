@@ -4,3 +4,9 @@ __pycache__/
 *.pyc
 .ref_hash.txt
 .DS_Store
+
+# 不入库：可复现产物（任意环境按 specs 字节级重建）
+examples/
+*.webp
+*_preview.png
+preview_checker.png
