@@ -48,8 +48,10 @@ python3 make_spritesheet.py --spec specs/<name>.json   # 构建+自动校验(尺
 | 场景 | 动作 |
 |---|---|
 | 同账号新对话 | 工作区已持久化：直接 §0 自检后开工，零上传 |
-| 新账号/新工作区 | 有网络：`bash init_workspace.sh <私有库url>`（30 秒就绪）；无网络：首会话上传 `codex_pet_framework.zip` 一次 → `bash init_workspace.sh --zip <zip>` → §0 |
-| 裸 API（无工作区） | 自建持久：私有 git 仓库存框架（见 docs/GIT_PERSISTENCE.md），会话首命令 clone；或 system prompt 内嵌本文件（~2k）+ 附件 blob_template.py（~3k） |
+| 新账号/新工作区（有 git） | 种子一条命令：`git clone --depth 1 <私有库url> && cd <目录> && bash init_workspace.sh --here`（脚本在库内，落地后现身） |
+| 新环境（无 git 有网络） | `curl -L -H "Authorization: token $GIT_TOKEN" <私有库 zip 下载地址> -o fw.zip && unzip fw.zip && cd codex-pet-framework-main && bash init_workspace.sh --here` |
+| 新环境（无网络） | 首会话上传 `codex_pet_framework.zip` 一次 → `bash init_workspace.sh --zip <zip>`（脚本在 zip 内） |
+| 裸 API（无工作区/无 shell） | system prompt 内嵌本文件（~2k）+ 附件 blob_template.py（~3k） |
 
 ## 6. 成本基线（单只宠物/会话）
 

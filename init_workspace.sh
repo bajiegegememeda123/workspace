@@ -1,43 +1,49 @@
 #!/usr/bin/env bash
-# init_workspace.sh — 把任意空白环境一键初始化为 Codex Pet 雪碧图生产线
+# init_workspace.sh — 把任意空白环境初始化为 Codex Pet 雪碧图生产线
 #
-# 用法（二选一）:
-#   bash init_workspace.sh <私有git仓库url> [目标目录]      # 有网络: clone 正本
-#   bash init_workspace.sh --zip <框架zip路径> [目标目录]   # 无网络/无git: zip 恢复
-#
-# 自动步骤: 获取框架 -> MANIFEST 完整性校验 -> 依赖检查/安装 -> 冒烟构建+校验 -> 打印 READY
+# 用法（三模式）:
+#   bash init_workspace.sh <私有git仓库url> [目标目录]        # 有 git: clone + 校验 + 依赖 + 冒烟
+#   bash init_workspace.sh --zip <框架zip路径> [目标目录]     # 无 git: zip 恢复 + 校验 + 依赖 + 冒烟
+#   bash init_workspace.sh --here                            # 框架已在当前目录(如刚 git clone / unzip 过):
+#                                                            #   仅 校验 + 依赖 + 冒烟
+# 说明: 本脚本本身住在仓库/zip 内; 空白环境的"种子"只需一条 git clone / curl / 一次 zip 附件,
+#       种子落地后由本脚本完成剩余初始化(--here 模式)。
 set -euo pipefail
 
 TARGET_DEFAULT="codex_pet_workspace"
 
-usage() { sed -n '2,10p' "$0"; exit 1; }
+usage() { sed -n '2,9p' "$0"; exit 1; }
 [ $# -ge 1 ] || usage
 
-MODE="" SRC="" TARGET=""
-if [ "$1" = "--zip" ]; then
-  MODE="zip"; SRC="${2:?缺少 zip 路径}"; TARGET="${3:-$TARGET_DEFAULT}"
-else
-  MODE="git"; SRC="$1"; TARGET="${2:-$TARGET_DEFAULT}"
-fi
+MODE=""; SRC=""; TARGET=""
+case "$1" in
+  --here) MODE=here; TARGET="." ;;
+  --zip)  MODE=zip; SRC="${2:?缺少 zip 路径}"; TARGET="${3:-$TARGET_DEFAULT}" ;;
+  -h|--help) usage ;;
+  *)      MODE=git; SRC="$1"; TARGET="${2:-$TARGET_DEFAULT}" ;;
+esac
 
 echo "== [1/4] 获取框架 ($MODE) -> $TARGET"
-mkdir -p "$TARGET"
-if [ "$MODE" = "git" ]; then
+if [ "$MODE" = "here" ]; then
+  cd "$TARGET"
+  [ -f MANIFEST.sha256 ] || { echo "NOT_FRAMEWORK_ROOT: 当前目录缺少 MANIFEST.sha256"; exit 1; }
+elif [ "$MODE" = "git" ]; then
+  mkdir -p "$TARGET"
   git clone --depth 1 "$SRC" "$TARGET"
+  cd "$TARGET"
 else
+  mkdir -p "$TARGET"
   TMP="$(mktemp -d)"
   python3 - "$SRC" "$TMP" <<'PY'
 import sys, zipfile
 zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])
 PY
-  # zip 内有一层 codex_pet_framework/ 前缀，剥离后移入 TARGET
   INNER="$TMP/codex_pet_framework"
   [ -d "$INNER" ] || INNER="$TMP"
   cp -a "$INNER/." "$TARGET/"
   rm -rf "$TMP"
+  cd "$TARGET"
 fi
-
-cd "$TARGET"
 
 echo "== [2/4] 完整性校验"
 sha256sum -c MANIFEST.sha256 --quiet && echo "FRAMEWORK_OK" || { echo "FRAMEWORK_CORRUPT"; exit 1; }

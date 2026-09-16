@@ -23,13 +23,16 @@
 
 ## 二、任何新环境初始化（30 秒）
 
-```bash
-bash init_workspace.sh https://github.com/<you>/codex-pet-framework.git
-# 或无网络/无 git 环境:
-bash init_workspace.sh --zip /path/to/codex_pet_framework.zip
-```
+**种子 vs 初始化器**：`init_workspace.sh` 住在仓库/zip 内，空白环境先落"种子"（一条外部命令或一次 zip 附件），脚本现身后接管其余步骤。
 
-脚本自动：clone/解压 → `sha256sum -c MANIFEST.sha256` → 依赖检查（缺则 pip install）
+| 环境能力 | 种子命令 | 接管命令 |
+|---|---|---|
+| 有 git + 网络 | `git clone --depth 1 <url> && cd <目录>` | `bash init_workspace.sh --here` |
+| 仅网络 | `curl -L -H "Authorization: Bearer $GIT_TOKEN" https://codeload.github.com/<you>/<repo>/zip/refs/heads/main -o fw.zip && unzip fw.zip && cd <解压目录>` | `bash init_workspace.sh --here` |
+| 无网络 | 首会话附件 `codex_pet_framework.zip` | `bash init_workspace.sh --zip <zip>` |
+| 有 git 想一步到位 | — | `bash init_workspace.sh <url>`（内部=clone+接管） |
+
+接管步骤（自动）：`sha256sum -c MANIFEST.sha256` → 依赖检查（缺则 pip install）
 → 冒烟构建 blob_demo 并确认 `VALIDATION OK` → 打印 READY。
 随后按 `BOOTSTRAP.md` §1–§4 生产新宠物。
 
