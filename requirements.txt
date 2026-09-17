@@ -6,4 +6,4 @@
 #     其余 import (math/json/argparse/importlib/sys) 均为 Python 标准库，无需安装。
 #   - 精确固定版本以保证产物字节级可复现 (WebP lossless 编码随 libwebp/Pillow 版本变化)。
 #   - Python 版本要求: >= 3.9 (仅用 f-string / 字典序等基础特性)。
-Pillow==12.3.0
+Pillow>=12.3.0
